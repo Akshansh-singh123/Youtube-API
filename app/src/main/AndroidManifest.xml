@@ -14,10 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.YoutubeAPI">
         <activity
-            android:name=".VideoActivity"
+            android:name=".screen.videoplayer.VideoPlayerActivity"
             android:exported="true" />
         <activity
-            android:name=".screen.MainActivity"
+            android:name=".screen.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

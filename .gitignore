@@ -13,3 +13,4 @@
 .externalNativeBuild
 .cxx
 local.properties
+./main/java/com/akshansh/youtubeapi/Keys.java

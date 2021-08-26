@@ -1,5 +1,7 @@
 package com.akshansh.youtubeapi.network;
 
+import android.util.Log;
+
 import com.akshansh.youtubeapi.Keys;
 import com.akshansh.youtubeapi.common.BaseObservable;
 import com.akshansh.youtubeapi.common.utils.InternetConnectionTester;
@@ -15,12 +17,13 @@ import retrofit2.Response;
 public class FetchSearchResultsUseCase extends BaseObservable<FetchSearchResultsUseCase.Listener> {
     public interface Listener{
         void OnFetchedVideos(YoutubeSearchSchema schema);
-        void OnFetchFailure(String message);
+        void OnSearchListFetchFailure(String message);
         void OnNetworkError();
     }
 
     private final YoutubeApi youtubeApi;
-    private InternetConnectionTester internetConnectionTester;
+    private final InternetConnectionTester internetConnectionTester;
+    private static final String TAG = "Search";
 
     public FetchSearchResultsUseCase(YoutubeApi youtubeApi, InternetConnectionTester internetConnectionTester) {
         this.youtubeApi = youtubeApi;
@@ -43,6 +46,7 @@ public class FetchSearchResultsUseCase extends BaseObservable<FetchSearchResults
         hashMap.put("type","video");
         hashMap.put("order","relevance");
         fetchVideos(hashMap);
+        Log.e(TAG, "fetchVideos: ");
     }
 
     public void fetchVideos(String searchTerm,String pageToken){
@@ -76,7 +80,7 @@ public class FetchSearchResultsUseCase extends BaseObservable<FetchSearchResults
                         }
                     }else{
                         for(Listener listener: getListeners()){
-                            listener.OnFetchFailure(response.message());
+                            listener.OnSearchListFetchFailure("Failed to fetch search results");
                         }
                     }
                 }
@@ -85,8 +89,9 @@ public class FetchSearchResultsUseCase extends BaseObservable<FetchSearchResults
             @Override
             public void onFailure(Call<YoutubeSearchSchema> call, Throwable t) {
                 for(Listener listener: getListeners()){
-                    listener.OnFetchFailure(t.getMessage());
+                    listener.OnSearchListFetchFailure(t.getMessage());
                 }
+                Log.e(TAG, "onFailure: "+t.getMessage());
             }
         });
     }

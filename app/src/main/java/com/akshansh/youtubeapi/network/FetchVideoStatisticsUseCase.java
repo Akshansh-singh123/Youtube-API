@@ -77,7 +77,7 @@ public class FetchVideoStatisticsUseCase extends BaseObservable<FetchVideoStatis
                     }
                 }else{
                     for(Listener listener: getListeners()){
-                        listener.OnStatsFetchFailure(response.message());
+                        listener.OnStatsFetchFailure("Failed to fetch search list info");
                     }
                 }
             }

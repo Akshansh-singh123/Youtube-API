@@ -1,9 +1,6 @@
 package com.akshansh.youtubeapi.common.dependecyinjection.controller;
 
-import android.app.Activity;
-
-import com.akshansh.youtubeapi.VideoActivity;
-import com.akshansh.youtubeapi.screen.MainActivity;
+import com.akshansh.youtubeapi.screen.main.MainActivity;
 
 import dagger.Subcomponent;
 

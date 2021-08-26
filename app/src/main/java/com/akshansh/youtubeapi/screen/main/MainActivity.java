@@ -1,4 +1,4 @@
-package com.akshansh.youtubeapi.screen;
+package com.akshansh.youtubeapi.screen.main;
 
 import android.os.Bundle;
 import android.view.View;
@@ -6,7 +6,7 @@ import android.view.View;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.akshansh.youtubeapi.Model;
-import com.akshansh.youtubeapi.VideoAdapter;
+import com.akshansh.youtubeapi.common.ViewMvcFactory;
 import com.akshansh.youtubeapi.databinding.ActivityMainBinding;
 import com.akshansh.youtubeapi.network.FetchSearchResultsUseCase;
 import com.akshansh.youtubeapi.network.FetchVideoStatisticsUseCase;
@@ -20,27 +20,24 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class MainActivity extends BaseActivity implements VideoAdapter.Listener,
-        FetchSearchResultsUseCase.Listener, FetchVideoStatisticsUseCase.Listener {
+public class MainActivity extends BaseActivity implements FetchSearchResultsUseCase.Listener,
+        FetchVideoStatisticsUseCase.Listener, MainViewMvc.Listener {
     @Inject public YoutubeApi youtubeApi;
     @Inject public FetchSearchResultsUseCase fetchSearchResultsUseCase;
     @Inject public ToastHelper toastHelper;
     @Inject public FetchVideoStatisticsUseCase fetchVideoStatisticsUseCase;
     @Inject public ScreensNavigator screensNavigator;
+    @Inject public ViewMvcFactory viewMvcFactory;
+    private MainViewMvc viewMvc;
     private YoutubeSearchSchema youtubeSearchSchema;
-    private ActivityMainBinding binding;
-    private VideoAdapter adapter;
     private int pageNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getInjector().inject(this);
-        binding = ActivityMainBinding.inflate(getLayoutInflater(),null,false);
-        setContentView(binding.getRoot());
-        adapter = new VideoAdapter(getLayoutInflater(),this);
-        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        binding.recyclerView.setAdapter(adapter);
+        viewMvc = viewMvcFactory.getMainViewMvc(null);
+        setContentView(viewMvc.getRootView());
         pageNumber = 1;
     }
 
@@ -49,48 +46,18 @@ public class MainActivity extends BaseActivity implements VideoAdapter.Listener,
         super.onStart();
         fetchSearchResultsUseCase.registerListener(this);
         fetchVideoStatisticsUseCase.registerListener(this);
-        binding.progressFrame.setVisibility(View.VISIBLE);
-        binding.recyclerView.setVisibility(View.GONE);
+        viewMvc.registerListener(this);
         fetchSearchResultsUseCase.fetchVideos("cricket");
+        viewMvc.showProgressFrame();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        binding = null;
+        viewMvc.clearBinding();
+        viewMvc.unregisterListener(this);
         fetchSearchResultsUseCase.unregisterListener(this);
         fetchVideoStatisticsUseCase.unregisterListener(this);
-    }
-
-    @Override
-    public void onItemClicked(Model model) {
-        screensNavigator.toVideoActivity(model);
-    }
-
-    @Override
-    public void onPrevButtonClicked() {
-        if(youtubeSearchSchema != null){
-            binding.progressFrame.setVisibility(View.VISIBLE);
-            binding.recyclerView.setVisibility(View.GONE);
-            pageNumber -= 1;
-            if(youtubeSearchSchema.getPrevPageToken() != null){
-                fetchSearchResultsUseCase.fetchVideos("cricket",
-                        youtubeSearchSchema.getPrevPageToken());
-            }
-        }
-    }
-
-    @Override
-    public void onNextButtonClicked() {
-        if(youtubeSearchSchema != null){
-            binding.progressFrame.setVisibility(View.VISIBLE);
-            binding.recyclerView.setVisibility(View.GONE);
-            pageNumber += 1;
-            if(youtubeSearchSchema.getNextPageToken() != null){
-                fetchSearchResultsUseCase.fetchVideos("cricket",
-                        youtubeSearchSchema.getNextPageToken());
-            }
-        }
     }
 
     @Override
@@ -105,26 +72,53 @@ public class MainActivity extends BaseActivity implements VideoAdapter.Listener,
     }
 
     @Override
-    public void OnFetchFailure(String message) {
+    public void OnSearchListFetchFailure(String message) {
         toastHelper.makeToast(message);
     }
 
     @Override
     public void OnFetchedStatsSuccessfully(List<Model> models) {
-        adapter.bindList(models,pageNumber);
-        binding.recyclerView.setVisibility(View.VISIBLE);
-        binding.progressFrame.setVisibility(View.GONE);
-        binding.recyclerView.scrollToPosition(0);
+        viewMvc.bindListItems(models,pageNumber);
+        viewMvc.hideProgressFrame();
     }
 
     @Override
     public void OnStatsFetchFailure(String message) {
         toastHelper.makeToast(message);
-        binding.progressFrame.setVisibility(View.GONE);
+        viewMvc.hideProgressFrame();
     }
 
     @Override
     public void OnNetworkError() {
         toastHelper.makeToast("Check your internet connection");
+    }
+
+    @Override
+    public void OnSearchItemClicked(Model model) {
+        screensNavigator.toVideoActivity(model);
+    }
+
+    @Override
+    public void OnNextButtonClicked() {
+        if(youtubeSearchSchema != null){
+            viewMvc.showProgressFrame();
+            pageNumber += 1;
+            if(youtubeSearchSchema.getNextPageToken() != null){
+                fetchSearchResultsUseCase.fetchVideos("cricket",
+                        youtubeSearchSchema.getNextPageToken());
+            }
+        }
+    }
+
+    @Override
+    public void OnPreviousButtonClicked() {
+        if(youtubeSearchSchema != null){
+            viewMvc.showProgressFrame();
+            pageNumber -= 1;
+            if(youtubeSearchSchema.getPrevPageToken() != null){
+                fetchSearchResultsUseCase.fetchVideos("cricket",
+                        youtubeSearchSchema.getPrevPageToken());
+            }
+        }
     }
 }
