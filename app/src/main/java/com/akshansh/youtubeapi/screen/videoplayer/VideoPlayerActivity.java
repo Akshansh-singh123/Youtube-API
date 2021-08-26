@@ -1,30 +1,17 @@
 package com.akshansh.youtubeapi.screen.videoplayer;
 
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
 import android.os.Bundle;
 
-import com.akshansh.youtubeapi.Keys;
 import com.akshansh.youtubeapi.Model;
 import com.akshansh.youtubeapi.common.Constants;
-import com.akshansh.youtubeapi.common.CustomApplication;
 import com.akshansh.youtubeapi.common.ViewMvcFactory;
-import com.akshansh.youtubeapi.databinding.ActivityVideoBinding;
 import com.akshansh.youtubeapi.network.FetchVideoDescUseCase;
-import com.akshansh.youtubeapi.network.YoutubeApi;
 import com.akshansh.youtubeapi.schemas.descriptionschema.YoutubeSnippetSchema;
 import com.akshansh.youtubeapi.screen.common.YoutubeBaseActivity;
 import com.akshansh.youtubeapi.screen.common.screensnavigator.ScreensNavigator;
 import com.akshansh.youtubeapi.screen.common.toast.ToastHelper;
-import com.google.android.youtube.player.YouTubeBaseActivity;
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubePlayer;
 
 import javax.inject.Inject;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class VideoPlayerActivity extends YoutubeBaseActivity implements
         FetchVideoDescUseCase.Listener, VideoPlayerViewMvc.Listener {

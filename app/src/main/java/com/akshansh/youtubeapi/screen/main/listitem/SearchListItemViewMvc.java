@@ -1,4 +1,4 @@
-package com.akshansh.youtubeapi.screen.main;
+package com.akshansh.youtubeapi.screen.main.listitem;
 
 import com.akshansh.youtubeapi.Model;
 import com.akshansh.youtubeapi.screen.common.views.ObservableViewMvc;

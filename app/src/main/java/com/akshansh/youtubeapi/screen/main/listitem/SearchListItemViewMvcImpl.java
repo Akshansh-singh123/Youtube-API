@@ -1,4 +1,4 @@
-package com.akshansh.youtubeapi.screen.main;
+package com.akshansh.youtubeapi.screen.main.listitem;
 
 import android.view.LayoutInflater;
 import android.view.View;

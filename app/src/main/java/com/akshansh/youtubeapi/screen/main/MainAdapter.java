@@ -1,6 +1,5 @@
 package com.akshansh.youtubeapi.screen.main;
 
-import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -8,9 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.akshansh.youtubeapi.Model;
 import com.akshansh.youtubeapi.common.ViewMvcFactory;
-import com.akshansh.youtubeapi.databinding.ListItemBinding;
-import com.akshansh.youtubeapi.databinding.ListItemSkipLayouBinding;
-import com.squareup.picasso.Picasso;
+import com.akshansh.youtubeapi.screen.main.listitem.SearchListItemViewMvc;
+import com.akshansh.youtubeapi.screen.main.listitem.SkipListItemViewMvc;
 
 import java.util.ArrayList;
 import java.util.List;

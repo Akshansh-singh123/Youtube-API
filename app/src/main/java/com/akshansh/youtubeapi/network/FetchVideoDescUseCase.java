@@ -29,6 +29,7 @@ public class FetchVideoDescUseCase extends BaseObservable<FetchVideoDescUseCase.
             for(Listener listener: getListeners()){
                 listener.OnNetworkError();
             }
+            return;
         }
 
         Call<YoutubeSnippetSchema> schemaCall = youtubeApi

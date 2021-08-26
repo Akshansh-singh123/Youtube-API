@@ -22,7 +22,7 @@
         tools:text="10"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="#5f000000"
+        android:textColor="#de000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/next_button"
         app:layout_constraintStart_toEndOf="@+id/prev_button"

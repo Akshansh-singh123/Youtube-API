@@ -10,7 +10,9 @@ public interface MainViewMvc extends ObservableViewMvc<MainViewMvc.Listener> {
         void OnSearchItemClicked(Model model);
         void OnNextButtonClicked();
         void OnPreviousButtonClicked();
+        void OnSearchQuery(String query);
     }
+    void bindView();
     void bindListItems(List<Model> modelList, int pageNumber);
     void clearBinding();
     void showProgressFrame();

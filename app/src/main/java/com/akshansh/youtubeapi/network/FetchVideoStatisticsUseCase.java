@@ -19,7 +19,7 @@ public class FetchVideoStatisticsUseCase extends BaseObservable<FetchVideoStatis
     public interface Listener{
         void OnFetchedStatsSuccessfully(List<Model> models);
         void OnStatsFetchFailure(String message);
-        void OnNetworkError();
+        void OnFetchStatsNetworkError();
     }
     private final YoutubeApi youtubeApi;
     private final InternetConnectionTester connectionTester;
@@ -33,8 +33,9 @@ public class FetchVideoStatisticsUseCase extends BaseObservable<FetchVideoStatis
     public void fetchVideoStats(YoutubeSearchSchema schema){
         if(!connectionTester.isConnected()){
             for(Listener listener: getListeners()){
-                listener.OnNetworkError();
+                listener.OnFetchStatsNetworkError();
             }
+            return;
         }
         models = new ArrayList<>();
         if(schema.getItems() != null) {

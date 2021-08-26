@@ -1,6 +1,7 @@
 package com.akshansh.youtubeapi.screen.main;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,6 +32,7 @@ public class MainActivity extends BaseActivity implements FetchSearchResultsUseC
     private MainViewMvc viewMvc;
     private YoutubeSearchSchema youtubeSearchSchema;
     private int pageNumber;
+    private String searchQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,7 @@ public class MainActivity extends BaseActivity implements FetchSearchResultsUseC
         viewMvc = viewMvcFactory.getMainViewMvc(null);
         setContentView(viewMvc.getRootView());
         pageNumber = 1;
+        viewMvc.bindView();
     }
 
     @Override
@@ -47,8 +50,6 @@ public class MainActivity extends BaseActivity implements FetchSearchResultsUseC
         fetchSearchResultsUseCase.registerListener(this);
         fetchVideoStatisticsUseCase.registerListener(this);
         viewMvc.registerListener(this);
-        fetchSearchResultsUseCase.fetchVideos("cricket");
-        viewMvc.showProgressFrame();
     }
 
     @Override
@@ -74,6 +75,16 @@ public class MainActivity extends BaseActivity implements FetchSearchResultsUseC
     @Override
     public void OnSearchListFetchFailure(String message) {
         toastHelper.makeToast(message);
+        viewMvc.hideProgressFrame();
+        viewMvc.bindView();
+    }
+
+    @Override
+    public void OnFetchSearchResultsNetworkError() {
+        viewMvc.hideProgressFrame();
+        viewMvc.bindView();
+        Log.e("TAG", "OnFetchSearchResultsNetworkError: ");
+        toastHelper.makeToast("Check your internet connection");
     }
 
     @Override
@@ -86,11 +97,14 @@ public class MainActivity extends BaseActivity implements FetchSearchResultsUseC
     public void OnStatsFetchFailure(String message) {
         toastHelper.makeToast(message);
         viewMvc.hideProgressFrame();
+        viewMvc.bindView();
     }
 
     @Override
-    public void OnNetworkError() {
+    public void OnFetchStatsNetworkError() {
         toastHelper.makeToast("Check your internet connection");
+        viewMvc.hideProgressFrame();
+        viewMvc.bindView();
     }
 
     @Override
@@ -100,11 +114,11 @@ public class MainActivity extends BaseActivity implements FetchSearchResultsUseC
 
     @Override
     public void OnNextButtonClicked() {
-        if(youtubeSearchSchema != null){
+        if(youtubeSearchSchema != null && searchQuery != null){
             viewMvc.showProgressFrame();
             pageNumber += 1;
             if(youtubeSearchSchema.getNextPageToken() != null){
-                fetchSearchResultsUseCase.fetchVideos("cricket",
+                fetchSearchResultsUseCase.fetchVideos(searchQuery,
                         youtubeSearchSchema.getNextPageToken());
             }
         }
@@ -112,13 +126,20 @@ public class MainActivity extends BaseActivity implements FetchSearchResultsUseC
 
     @Override
     public void OnPreviousButtonClicked() {
-        if(youtubeSearchSchema != null){
+        if(youtubeSearchSchema != null && searchQuery != null){
             viewMvc.showProgressFrame();
             pageNumber -= 1;
             if(youtubeSearchSchema.getPrevPageToken() != null){
-                fetchSearchResultsUseCase.fetchVideos("cricket",
+                fetchSearchResultsUseCase.fetchVideos(searchQuery,
                         youtubeSearchSchema.getPrevPageToken());
             }
         }
+    }
+
+    @Override
+    public void OnSearchQuery(String query) {
+        searchQuery = query;
+        fetchSearchResultsUseCase.fetchVideos(query);
+        viewMvc.showProgressFrame();
     }
 }

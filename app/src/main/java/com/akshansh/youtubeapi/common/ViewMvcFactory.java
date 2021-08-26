@@ -7,10 +7,10 @@ import androidx.annotation.Nullable;
 
 import com.akshansh.youtubeapi.screen.main.MainViewMvc;
 import com.akshansh.youtubeapi.screen.main.MainViewMvcImpl;
-import com.akshansh.youtubeapi.screen.main.SearchListItemViewMvc;
-import com.akshansh.youtubeapi.screen.main.SearchListItemViewMvcImpl;
-import com.akshansh.youtubeapi.screen.main.SkipListItemViewMvc;
-import com.akshansh.youtubeapi.screen.main.SkipListItemViewMvcImpl;
+import com.akshansh.youtubeapi.screen.main.listitem.SearchListItemViewMvc;
+import com.akshansh.youtubeapi.screen.main.listitem.SearchListItemViewMvcImpl;
+import com.akshansh.youtubeapi.screen.main.listitem.SkipListItemViewMvc;
+import com.akshansh.youtubeapi.screen.main.listitem.SkipListItemViewMvcImpl;
 import com.akshansh.youtubeapi.screen.videoplayer.VideoPlayerViewMvc;
 import com.akshansh.youtubeapi.screen.videoplayer.VideoPlayerViewMvcImpl;
 
